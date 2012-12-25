@@ -1,0 +1,33 @@
+@charset "UTF-8";
+
+.headliner-container {
+	margin: 10px 0;
+	margin: 1rem 0;
+	padding: 0 12px;
+	padding: 0 1.2rem;
+	list-style: none;
+}
+.headliner-item {
+	padding: 4px 0;
+	padding: 0.4rem 0;
+	border-bottom: dashed 1px #ccc;
+	overflow: hidden;
+}
+.hearliner-item-date {
+	float: left;
+	display: block;
+	margin: 4px 0;
+	margin: 0.4rem 0;
+	padding: 0 8px;
+	padding: 0 0.8rem;
+}
+.headliner-link {
+	display: block;
+	margin: 4px 0;
+	margin: 0.4rem 0;
+	padding: 0 8px;
+	padding: 0 0.8rem;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
