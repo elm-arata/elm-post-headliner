@@ -13,13 +13,21 @@
 	border-bottom: dashed 1px #ccc;
 	overflow: hidden;
 }
-.hearliner-item-date {
+.headliner-item-date {
 	float: left;
 	display: block;
 	margin: 4px 0;
 	margin: 0.4rem 0;
 	padding: 0 8px;
 	padding: 0 0.8rem;
+}
+.headliner-item-thumb {
+	float: left;
+	margin: 4px 4px 4px 0;
+	margin: 0.4rem 0.4rem 0.4rem 0;
+}
+.headliner-item-thumb img {
+	max-width: 100%;
 }
 .headliner-link {
 	display: block;

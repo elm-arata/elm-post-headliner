@@ -4,7 +4,7 @@ Plugin Name: ELM Post Headliner
 Plugin URI: http://www.element-system.co.jp
 Description: 記事のヘッドライン表示用ショートコードを提供します。Usage: [headliner]
 Author: Yuki Arata
-Version: 0.1
+Version: 1.0
 Author URI: http://www.element-system.co.jp
 License: GPLv2 or later
 */
@@ -28,11 +28,12 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 class ElmPostHeadliner
 {
-	private $ver = '0.1';
+	private $ver = 1.0;
 
 	protected $defaults = array(
 		'query'           => '',
 		'post_type'       => 'post',
+		'category_name'   => '',
 		'posts_per_page'  => '5',
 		'container_tag'   => 'ul',
 		'container_id'    => '',
@@ -40,6 +41,10 @@ class ElmPostHeadliner
 		'item_tag'        => 'li',
 		'item_class'      => 'headliner-item',
 		'date_format'     => 'Y/m/d',
+		'thumbnail'       => 'none', // 'show' or 'none'
+		'size'            => 'thumbnail',
+		'excerpt'         => 'none', // 'show' or 'none'
+		'template_function' => '',
 	);
 
 	public function __construct()
@@ -71,38 +76,98 @@ class ElmPostHeadliner
 				$atts['post_type'] = $atts[0];
 			}
 		}
-		// query set
-		if ( empty( $atts['query'] ) ) {
-			$atts['query'] = sprintf( 'post_type=%s&posts_per_page=%d'
-			                        , $atts['post_type'], $atts['posts_per_page'] );
-		}
-		extract( shortcode_atts( $this->defaults, $atts ) );
+		$param = shortcode_atts( $this->defaults, $atts );
 
-		$loop = new WP_Query( $query );
+		// query set
+		if ( empty( $param['query'] ) ) {
+			$tmp = array(
+				'post_type' => $param['post_type'],
+				'posts_per_page' => $param['posts_per_page'],
+				'category_name' => $param['category_name'],
+			);
+			$param['query'] = http_build_query($tmp, '', '&');
+		} else {
+			// Decode what encoded by WordPress. "&" <---> "&#038;"
+			$param['query'] = preg_replace('/&#038;/', '&', $param['query']);
+		}
+
+		$loop = new WP_Query( $param['query'] );
 
 		// output
 		if ( false === $loop->have_posts() )
 			return '';
 
+		//thumbnail size
+		if (preg_match('/^[0-9]+,[0-9]+$/', $param['size'])) {
+			$thumb_size = explode(',', $param['size']);
+			$thumb_size[0] = (int)$thumb_size[0];
+			$thumb_size[1] = (int)$thumb_size[1];
+		} else {
+			$thumb_size = $param['size'];
+		}
+
+
 		$buff = '';
 		$buff .= sprintf(
 			'<%s id="%s" class="%s">'
-			, $container_tag
-			, $container_id
-			, $container_class);
+			, $param['container_tag']
+			, $param['container_id']
+			, $param['container_class']);
+		$item_template = $this->get_template_item($param['thumbnail']);
+		$item_template = apply_filters('elm-post-headliner-item-template', $item_template);
+		if ($param['template_function'] && function_exists($param['template_function'])) {
+			$item_template = $param['template_function']($item_template);
+		}
 		while ( $loop->have_posts() ) {
 			$loop->the_post();
-			$buff .= sprintf(
-				'<%s class="%s">'
-				, $item_tag
-				, $item_class);
-			$buff .= sprintf('<span class="hearliner-item-date">%s</span>', get_the_time($date_format) );
-			$buff .= sprintf('<a href="%s" class="headliner-link">%s</a>', get_permalink(), get_the_title() );
-			$buff .= sprintf('</%s>', $item_tag);
+			$tmp = $item_template;
+			$tmp = str_replace('%item_tag%', $param['item_tag'], $tmp);
+			$tmp = str_replace('%item_class%', $param['item_class'], $tmp);
+			$tmp = str_replace('%post_date%', get_the_time($param['date_format']), $tmp);
+			$tmp = str_replace('%post_url%', get_permalink(), $tmp);
+			$tmp = str_replace('%post_title%', get_the_title(), $tmp);
+
+			if ($param['thumbnail'] == 'show' && $thumb_id = get_post_thumbnail_id()) {
+				$src = wp_get_attachment_image_src($thumb_id, $thumb_size);
+				$img = sprintf(
+					'<a href="%s" class="headliner-item-thumb"><img src="%s" alt="%s" title="%s" /></a>'
+					, get_permalink()
+					, esc_attr($src[0])
+					, esc_attr(get_the_title())
+					, esc_attr(get_the_title())
+				);
+				$tmp = str_replace('%post_thumbnail%', $img, $tmp);
+			} else {
+				$tmp = str_replace('%post_thumbnail%', '', $tmp);
+			}
+
+			if ($param['excerpt'] == 'show') {
+				$excerpt = sprintf(
+					'<span class="headliner-item-excerpt">%s</span>'
+					, get_the_excerpt()
+				);
+				$tmp = str_replace('%post_excerpt%', $excerpt, $tmp);
+			} else {
+				$tmp = str_replace('%post_excerpt%', '', $tmp);
+			}
+
+			$buff .= $tmp;
 		}//endwhile
-		$buff .= sprintf('</%s>', $container_tag);
+		$buff .= sprintf('</%s>', $param['container_tag']);
 		wp_reset_postdata();
 		return $buff;
+	}
+
+
+	function get_template_item()
+	{
+		$html  = '<%item_tag% class="%item_class%">';
+		$html .= '<span class="headliner-item-date">%post_date%</span>';
+		$html .= '<a href="%post_url%" class="headliner-link">%post_title%</a>';
+		$html .= '%post_thumbnail%';
+		$html .= '%post_excerpt%';
+		$html .= '</%item_tag%>';
+		return apply_filters('elm-post-headliner-template-item', $html);
 	}
 
 }//endclass
