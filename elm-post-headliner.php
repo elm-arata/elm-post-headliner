@@ -31,6 +31,7 @@ class ElmPostHeadliner
 	private $ver = 1.0;
 
 	protected $defaults = array(
+		// Query Parameters
 		'query'           => '',
 		'post_type'       => 'post',
 		'category_name'   => '',
@@ -40,6 +41,7 @@ class ElmPostHeadliner
 		'container_class' => 'headliner-container',
 		'item_tag'        => 'li',
 		'item_class'      => 'headliner-item',
+		'item_inner_class' => 'headliner-item-inner',
 		'date_format'     => 'Y/m/d',
 		'thumbnail'       => 'none', // 'show' or 'none'
 		'size'            => 'thumbnail',
@@ -123,6 +125,7 @@ class ElmPostHeadliner
 			$tmp = $item_template;
 			$tmp = str_replace('%item_tag%', $param['item_tag'], $tmp);
 			$tmp = str_replace('%item_class%', $param['item_class'], $tmp);
+			$tmp = str_replace('%item_inner_class%', $param['item_inner_class'], $tmp);
 			$tmp = str_replace('%post_date%', get_the_time($param['date_format']), $tmp);
 			$tmp = str_replace('%post_url%', get_permalink(), $tmp);
 			$tmp = str_replace('%post_title%', get_the_title(), $tmp);
@@ -161,11 +164,14 @@ class ElmPostHeadliner
 
 	function get_template_item()
 	{
-		$html  = '<%item_tag% class="%item_class%">';
+		$html = '';
+		$html .= '<%item_tag% class="%item_class%">';
+			$html .= '<div class="%item_inner_class%">';
 		$html .= '<span class="headliner-item-date">%post_date%</span>';
 		$html .= '<a href="%post_url%" class="headliner-link">%post_title%</a>';
 		$html .= '%post_thumbnail%';
 		$html .= '%post_excerpt%';
+			$html .= '</div>';
 		$html .= '</%item_tag%>';
 		return apply_filters('elm-post-headliner-template-item', $html);
 	}
