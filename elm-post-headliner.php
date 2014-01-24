@@ -36,6 +36,12 @@ class ElmPostHeadliner
 		'post_type'       => 'post',
 		'category_name'   => '',
 		'posts_per_page'  => '5',
+		// Taxonomy Parameters
+		'tax' => null,
+		'tax_field' => 'slug',// 'id' or 'slug'
+		'tax_terms' => null,
+		'tax_include_children' => true,
+		// Output Settings
 		'container_tag'   => 'ul',
 		'container_id'    => '',
 		'container_class' => 'headliner-container',
@@ -80,20 +86,33 @@ class ElmPostHeadliner
 		}
 		$param = shortcode_atts( $this->defaults, $atts );
 
+		$args = array();
+
 		// query set
 		if ( empty( $param['query'] ) ) {
-			$tmp = array(
+			$args = array(
 				'post_type' => $param['post_type'],
 				'posts_per_page' => $param['posts_per_page'],
 				'category_name' => $param['category_name'],
 			);
-			$param['query'] = http_build_query($tmp, '', '&');
+			if ( $param['tax'] && $param['tax_terms'] ) {
+				$tax_query = array(
+					'taxonomy' => $param['tax'],
+					'field' => $param['tax_field'],
+					'terms' => explode( ',', $param['tax_terms'].''),
+					'include_children' => $param['tax_include_children'],
+				);
+				// if ( count( $tax_query['terms'] ) <= 1 ) {
+				// 	$tax_query['terms'] = $param['tax_terms'];
+				// }
+				$args['tax_query'] = array($tax_query);
+			}
 		} else {
 			// Decode what encoded by WordPress. "&" <---> "&#038;"
-			$param['query'] = preg_replace('/&#038;/', '&', $param['query']);
+			$args = preg_replace('/&#038;/', '&', $param['query']);
 		}
 
-		$loop = new WP_Query( $param['query'] );
+		$loop = new WP_Query( $args );
 
 		// output
 		if ( false === $loop->have_posts() )
