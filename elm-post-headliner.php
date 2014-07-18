@@ -36,6 +36,7 @@ class ElmPostHeadliner
 		'post_type'       => 'post',
 		'category_name'   => '',
 		'posts_per_page'  => '5',
+		'author'          => '',
 		// Taxonomy Parameters
 		'tax' => null,
 		'tax_field' => 'slug',// 'id' or 'slug'
@@ -94,6 +95,7 @@ class ElmPostHeadliner
 				'post_type' => $param['post_type'],
 				'posts_per_page' => $param['posts_per_page'],
 				'category_name' => $param['category_name'],
+				'author' => $param['author'],
 			);
 			if ( $param['tax'] && $param['tax_terms'] ) {
 				$tax_query = array(
