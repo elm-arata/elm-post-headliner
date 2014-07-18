@@ -12,6 +12,11 @@
 	padding: 0.4rem 0;
 	border-bottom: dashed 1px #ccc;
 	overflow: hidden;
+	zoom: 1;
+}
+.headliner-item-inner {
+	overflow: hidden;
+	zoom: 1;
 }
 .headliner-item-date {
 	float: left;
@@ -25,11 +30,14 @@
 	float: left;
 	margin: 4px 4px 4px 0;
 	margin: 0.4rem 0.4rem 0.4rem 0;
+	padding: 0 8px;
+	padding: 0 0.8rem;
 }
 .headliner-item-thumb img {
 	max-width: 100%;
 }
 .headliner-link {
+	/*float: left;*//* ellipsis 有効化のためfloatさせない */
 	display: block;
 	margin: 4px 0;
 	margin: 0.4rem 0;
