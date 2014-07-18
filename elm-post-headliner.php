@@ -1,10 +1,10 @@
 <?php
 /*
 Plugin Name: ELM Post Headliner
-Plugin URI: http://www.element-system.co.jp
-Description: 記事のヘッドライン表示用ショートコードを提供します。オプションの一覧はソースを参照。Usage: [headliner], [headliner category_name=hoge], [headliner post_type=piyo posts_per_page=n]
+Plugin URI: https://bitbucket.org/elmadmin/elm-post-headliner
+Description: 記事のヘッドライン表示用ショートコードを提供します。Usage: [headliner] <a href="https://bitbucket.org/elmadmin/elm-post-headliner">&raquo;詳しい説明</a>
 Author: Yuki Arata
-Version: 1.2.1
+Version: 1.3.0
 Author URI: http://www.element-system.co.jp
 License: GPLv2 or later
 */
@@ -28,7 +28,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 class ElmPostHeadliner
 {
-	private $ver = '1.2.1';
+	private $ver = '1.3.0';
 
 	protected $defaults = array(
 		// Query Parameters
