@@ -25,6 +25,7 @@
 
 ### Query option
 
+* `author` *(string|int)* - 投稿者ID。カンマ区切りで複数指定可。
 * `post_type` *(string)* - 検索対象の投稿タイプ。デフォルトは 'post'。
 	* 'post' - 投稿
 	* 'page' - 固定ページ
@@ -32,11 +33,14 @@
 	* カスタム投稿タイプのスラッグ
 * `category_name` *(string)* - 検索対象のカテゴリースラッグ。カンマ区切りで複数指定可。
 * `posts_per_page` *(int)* - 表示件数。デフォルトは5件。
+* `query` *(string)* - クエリ文字列を直接指定できる。このオプションを使った場合、他のあらゆるクエリーオプションは無視される。
+
+### Query option (taxonomy)
+
 * `tax` *(string)* - 検索対象のタクソノミースラッグ。
 * `tax_field` *(string)* - `tax`で指定したタクソノミーでのターム検索方式。('id' or 'slug')
 * `tax_terms` *(int, string)* - `tax_field`の検索パラメータ。カンマ区切りで複数指定可。
 * `tax_include_children` *(boolean)* - 階層型タクソノミーの場合、子タームも検索に含めるかどうか。デフォルトは true。
-* `query` *(string)* - クエリ文字列を直接指定できる。このオプションを使った場合、他の全てのクエリーオプションは無視される。
 
 ### Output option
 
