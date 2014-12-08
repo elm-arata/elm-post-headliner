@@ -59,22 +59,35 @@
 
 ### elm-post-headliner-template
 
-ヘッドラインアイテム要素のHTMLテンプレートを返すことでカスタマイズできる。
+ヘッドラインアイテムのカスタムテンプレートを使うことができる。
 
 ```
-//例
+// 例
 function my_eph_template() {
 	return '<div>%post_title%</div>';
 }
 add_filter('elm-post-headliner-template', 'my_eph_template');
 ```
 
+ヘッドラインアイテムテンプレート内で利用できる置換タグは以下のとおり。
+
+* `%post_date%` : 投稿日時。フォーマットはオプションパラメータ `date_format` で指定できる。
+* `%post_url%` : 投稿のパーマリンク。
+* `%post_title%` : 投稿のタイトル。
+* `%post_thumbnail%` : 投稿のアイキャッチ画像。投稿へのリンク付きimgタグとして出力される。（例：<a href="hoge.html"><img src="piyo.jpg"></a>）
+* `%post_excerpt%` : 投稿の概要。
+* `%category_name%` : 投稿のカテゴリー名。（複数カテゴリーに属する投稿であっても、１つめのカテゴリーのみ。）
+* `%category_nicename%` : 投稿のカテゴリースラッグ。（複数カテゴリーに属する投稿であっても、１つめのカテゴリーのみ。）
+
+後述するフィルター `elm-post-headliner-textreplace` を定義すれば、ここで挙げた置換タグ以外に独自の置換タグを定義することもできる。（当然ながら独自の置換タグには、置換処理自体も自分で書く必要がある）
+
+
 ### elm-post-headliner-textreplace
 
 ヘッドラインアイテム要素の置換処理に独自の置換処理を加えることができる。置換後のテキストを返すこと。
 
 ```
-//例
+// 例
 function my_eph_replace($text, $options, $post) {
 	//独自タグの置換処理
 	return preg_replace('/%custom_replace_tag%/', '独自タグを置き換えるテキスト', $text);
