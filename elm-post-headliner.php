@@ -53,7 +53,6 @@ class ElmPostHeadliner
 		'thumbnail'       => 'none', // 'show' or 'none'
 		'size'            => 'thumbnail',
 		'excerpt'         => 'none', // 'show' or 'none'
-		'template_function' => '',
 	);
 
 	public function __construct()
@@ -136,14 +135,14 @@ class ElmPostHeadliner
 			, $param['container_tag']
 			, $param['container_id']
 			, $param['container_class']);
+
 		$item_template = $this->get_template_item($param['thumbnail']);
-		$item_template = apply_filters('elm-post-headliner-item-template', $item_template);
-		if ($param['template_function'] && function_exists($param['template_function'])) {
-			$item_template = $param['template_function']($item_template);
-		}
+		$item_template = apply_filters('elm-post-headliner-template', $item_template);
+
 		while ( $loop->have_posts() ) {
 			$loop->the_post();
 			$tmp = $item_template;
+			$tmp = apply_filters('elm-post-headliner-textreplace', $tmp, $param, $loop->post);
 			$tmp = str_replace('%item_tag%', $param['item_tag'], $tmp);
 			$tmp = str_replace('%item_class%', $param['item_class'], $tmp);
 			$tmp = str_replace('%item_inner_class%', $param['item_inner_class'], $tmp);
@@ -175,6 +174,27 @@ class ElmPostHeadliner
 				$tmp = str_replace('%post_excerpt%', '', $tmp);
 			}
 
+			//
+			// Category (Taxonomy)
+			//
+			if ( !empty($param['tax']) ) {
+				$categories = get_the_terms($loop->post, $param['tax']);
+			} else {
+				// $categories = get_the_terms($loop->post, 'category');
+				$categories = get_the_category();
+			}
+			// replace
+			if ( !empty($categories) && is_array($categories) ) {
+				$cat = current($categories);
+				$tmp = preg_replace('/%category_id%|%cat_ID%|%term_id%/', $cat->term_id, $tmp);
+				$tmp = preg_replace('/%category_name%|%cat_name%|%term_name%/', $cat->name, $tmp);
+				$tmp = preg_replace('/%category_nicename%|%category_slug%|%term_slug%/', $cat->slug, $tmp);
+			} else {
+				$tmp = preg_replace('/%category_id%|%term_id%/', '', $tmp);
+				$tmp = preg_replace('/%category_name%|%cat_name%/', '', $tmp);
+				$tmp = preg_replace('/%category_nicename%|%category_slug%|%term_slug%/', '', $tmp);
+			}
+
 			$buff .= $tmp;
 		}//endwhile
 		$buff .= sprintf('</%s>', $param['container_tag']);
@@ -185,16 +205,7 @@ class ElmPostHeadliner
 
 	function get_template_item()
 	{
-		$html = '';
-		$html .= '<%item_tag% class="%item_class%">';
-			$html .= '<div class="%item_inner_class%">';
-		$html .= '<span class="headliner-item-date">%post_date%</span>';
-		$html .= '<a href="%post_url%" class="headliner-link">%post_title%</a>';
-		$html .= '%post_thumbnail%';
-		$html .= '%post_excerpt%';
-			$html .= '</div>';
-		$html .= '</%item_tag%>';
-		return apply_filters('elm-post-headliner-template-item', $html);
+		return file_get_contents(dirname(__FILE__).'/item.tpl');
 	}
 
 }//endclass

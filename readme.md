@@ -53,3 +53,34 @@
 * `thumbnail` *(string)* - 記事のアイキャッチ画像のサムネイルを出力するかどうか。デフォルトは非表示 'none'。('show' or 'none')
 * `size` *(string)* - サムネイルを出力する場合、サイズの指定。デフォルトは 'thumbnail'。
 * `excerpt` *(string)* - 記事の概要テキストを出力するかどうか。デフォルトは非表示 'none'。('show' or 'none')
+
+
+## フィルターフック
+
+### elm-post-headliner-template
+
+ヘッドラインアイテム要素のHTMLテンプレートを返すことでカスタマイズできる。
+
+```
+//例
+function my_eph_template() {
+	return '<div>%post_title%</div>';
+}
+add_filter('elm-post-headliner-template', 'my_eph_template');
+```
+
+### elm-post-headliner-textreplace
+
+ヘッドラインアイテム要素の置換処理に独自の置換処理を加えることができる。置換後のテキストを返すこと。
+
+```
+//例
+function my_eph_replace($text, $options, $post) {
+	//独自タグの置換処理
+	return preg_replace('/%custom_replace_tag%/', '独自タグを置き換えるテキスト', $text);
+
+	//既存タグの置換処理を乗っ取るのも可
+	// return preg_replace('/%post_title%/', 'あいうえお', $text);
+}
+add_filter('elm-post-headliner-textreplace', 'my_eph_replace', 10, 3);
+```
