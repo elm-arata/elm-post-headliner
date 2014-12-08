@@ -64,7 +64,14 @@
 ```
 // 例
 function my_eph_template() {
-	return '<div>%post_title%</div>';
+	$html = <<< EOD
+<div class="my-eph-item">
+	%post_thumbnail%
+	<a href="%post_url%">%post_title%</a>
+	<span class="item-category item-category-%category_nicename%">%category_name%</span>
+</div>
+EOD;
+	return $html;
 }
 add_filter('elm-post-headliner-template', 'my_eph_template');
 ```
