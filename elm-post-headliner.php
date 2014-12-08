@@ -4,7 +4,7 @@ Plugin Name: ELM Post Headliner
 Plugin URI: https://bitbucket.org/elmadmin/elm-post-headliner
 Description: 記事のヘッドライン表示用ショートコードを提供します。Usage: [headliner] <a href="https://bitbucket.org/elmadmin/elm-post-headliner">&raquo;詳しい説明</a>
 Author: Yuki Arata
-Version: 1.4.0
+Version: 1.4.1
 Author URI: http://www.element-system.co.jp
 License: GPLv2 or later
 */
@@ -28,7 +28,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 class ElmPostHeadliner
 {
-	private $ver = '1.3.0';
+	private $ver = '1.4.1';
 
 	protected $defaults = array(
 		// Query Parameters
@@ -43,9 +43,9 @@ class ElmPostHeadliner
 		'tax_terms' => null,
 		'tax_include_children' => true,
 		// Output Settings
+		'id'    => '',
+		'class' => 'headliner-container',
 		'container_tag'   => 'ul',
-		'container_id'    => '',
-		'container_class' => 'headliner-container',
 		'item_tag'        => 'li',
 		'item_class'      => 'headliner-item',
 		'item_inner_class' => 'headliner-item-inner',
@@ -133,11 +133,11 @@ class ElmPostHeadliner
 		$buff .= sprintf(
 			'<%s id="%s" class="%s">'
 			, $param['container_tag']
-			, $param['container_id']
-			, $param['container_class']);
+			, $param['id']
+			, $param['class']);
 
 		$item_template = $this->get_template_item($param['thumbnail']);
-		$item_template = apply_filters('elm-post-headliner-template', $item_template);
+		$item_template = apply_filters('elm-post-headliner-template', $item_template, $param, $loop->post);
 
 		while ( $loop->have_posts() ) {
 			$loop->the_post();

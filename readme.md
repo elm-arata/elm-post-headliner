@@ -44,9 +44,9 @@
 
 ### Output option
 
+* `id` *(string)* - コンテナ要素のid属性。デフォルトは無し。
+* `class` *(string)* - コンテナ要素のclass属性。デフォルトは 'headliner-container'。
 * `container_tag` *(string)* - コンテナ要素に利用するHTMLタグ。デフォルトは 'ul'。
-* `container_id` *(string)* - コンテナ要素のid属性。デフォルトは無し。
-* `container_class` *(string)* - コンテナ要素のclass属性。デフォルトは 'headliner-container'。
 * `item_tag` *(string)* - ヘッドラインアイテム要素のHTMLタグ。デフォルトは 'li'。
 * `item_class` *(string)* - ヘッドラインアイテム要素のclass属性。デフォルトは 'headliner-item'。
 * `date_format` *(string)* - 日付表示フォーマット。PHPに準拠。デフォルトは 'Y/m/d'。
@@ -62,7 +62,7 @@
 ヘッドラインアイテムのカスタムテンプレートを使うことができる。
 
 ```
-// 例
+// 例1
 function my_eph_template() {
 	$html = <<< EOD
 <div class="my-eph-item">
@@ -74,6 +74,25 @@ EOD;
 	return $html;
 }
 add_filter('elm-post-headliner-template', 'my_eph_template');
+
+// 例2
+// ショートコードを複数使う場合に
+// 特定のもののみカスタムテンプレートにするには、
+// オプション `id` を指定した上で、以下のように指定。
+function my_eph_template_for_nanika($html, $params) {
+	// id 指定が 「nanika」の場合のみカスタムテンプレートを適用
+	if ($params['id'] == 'nanika') {
+		$html = <<< EOD
+<div class="my-eph-item-nanika">
+	%post_thumbnail%
+	<a href="%post_url%">%post_title%</a>
+	<span class="item-category item-category-%category_nicename%">%category_name%</span>
+</div>
+EOD;
+	}
+	return $html;
+}
+add_filter('elm-post-headliner-template', 'my_eph_template_for_nanika', 10, 2);
 ```
 
 ヘッドラインアイテムテンプレート内で利用できる置換タグは以下のとおり。
