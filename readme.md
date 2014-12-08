@@ -77,8 +77,9 @@ add_filter('elm-post-headliner-template', 'my_eph_template');
 
 // 例2
 // ショートコードを複数使う場合に
-// 特定のもののみカスタムテンプレートにするには、
-// オプション `id` を指定した上で、以下のように指定。
+// 特定のもののみカスタムテンプレートにするには
+// ショートコードオプション `id` を指定した上で （ [headliner id=nanika] ）
+// 以下のようにする。
 function my_eph_template_for_nanika($html, $params) {
 	// id 指定が 「nanika」の場合のみカスタムテンプレートを適用
 	if ($params['id'] == 'nanika') {
