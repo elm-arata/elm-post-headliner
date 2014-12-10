@@ -5,6 +5,8 @@
 
 ## Simple Usage
 
+最新の投稿を5件表示する。
+
     [headliner]
 
 ## Advanced Usage
