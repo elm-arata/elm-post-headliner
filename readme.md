@@ -13,11 +13,16 @@
 
     [headliner category_name=hoge posts_per_page=10]
 
-### コンテナ要素に任意の id を付与
+### コンテナ要素に任意の id や class を付与
 
-    [headliner container_id=hoge]
+    [headliner id=hoge class=piyo]
+
+    複数のクラスをつける場合はクォーテーションで括る
+
+    [headliner id=hoge class="piyo foo bar"]
 
 特定のヘッドラインにスタイルを指定したい時は、コンテナにid（またはclass）を付与し、それをセレクタに使う。
+特定のヘッドラインにのみカスタムテンプレートを適用する場合にも、コンテナにid（またはclass）を付与することが有効。
 
 ## Options
 
@@ -52,6 +57,7 @@
 * `date_format` *(string)* - 日付表示フォーマット。PHPに準拠。デフォルトは 'Y/m/d'。
 * `thumbnail` *(string)* - 記事のアイキャッチ画像のサムネイルを出力するかどうか。デフォルトは非表示 'none'。('show' or 'none')
 * `size` *(string)* - サムネイルを出力する場合、サイズの指定。デフォルトは 'thumbnail'。
+* `no_image` *(string)* - `thumbnail=show` の時に、サムネイル画像が存在しなかった場合の代替画像URL。
 * `excerpt` *(string)* - 記事の概要テキストを出力するかどうか。デフォルトは非表示 'none'。('show' or 'none')
 
 
@@ -101,7 +107,8 @@ add_filter('elm-post-headliner-template', 'my_eph_template_for_nanika', 10, 2);
 * `%post_date%` : 投稿日時。フォーマットはオプションパラメータ `date_format` で指定できる。
 * `%post_url%` : 投稿のパーマリンク。
 * `%post_title%` : 投稿のタイトル。
-* `%post_thumbnail%` : 投稿のアイキャッチ画像。投稿へのリンク付きimgタグとして出力される。（例：<a href="hoge.html"><img src="piyo.jpg"></a>）
+* `%post_thumbnail%` : 投稿のアイキャッチ画像。投稿へのリンク付きimgタグとして出力される（例：<a href="hoge.html"><img src="piyo.jpg"></a>）。サムネイル画像が無い場合でオプション `no_image` 指定があれば、それをURLとしたHTMLとして出力される。
+* `%post_thumbnail_url%` : 投稿のアイキャッチ画像URL。`%post_thumbnail%` と異なり、URLのみが出力される。サムネイル画像が無い場合でオプション `no_image` 指定があればそれが出力される。
 * `%post_excerpt%` : 投稿の概要。
 * `%category_name%` : 投稿のカテゴリー名。（複数カテゴリーに属する投稿であっても、１つめのカテゴリーのみ。）
 * `%category_nicename%` : 投稿のカテゴリースラッグ。（複数カテゴリーに属する投稿であっても、１つめのカテゴリーのみ。）

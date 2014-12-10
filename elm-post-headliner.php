@@ -38,21 +38,22 @@ class ElmPostHeadliner
 		'posts_per_page'  => '5',
 		'author'          => '',
 		// Taxonomy Parameters
-		'tax' => null,
-		'tax_field' => 'slug',// 'id' or 'slug'
-		'tax_terms' => null,
+		'tax'                  => null,
+		'tax_field'            => 'slug',
+		'tax_terms'            => null,
 		'tax_include_children' => true,
 		// Output Settings
-		'id'    => '',
-		'class' => 'headliner-container',
-		'container_tag'   => 'ul',
-		'item_tag'        => 'li',
-		'item_class'      => 'headliner-item',
-		'item_inner_class' => 'headliner-item-inner',
-		'date_format'     => 'Y/m/d',
-		'thumbnail'       => 'none', // 'show' or 'none'
-		'size'            => 'thumbnail',
-		'excerpt'         => 'none', // 'show' or 'none'
+		'id'                => '',
+		'class'             => 'headliner-container',
+		'container_tag'     => 'ul',
+		'item_tag'          => 'li',
+		'item_class'        => 'headliner-item',
+		'item_inner_class'  => 'headliner-item-inner',
+		'date_format'       => 'Y/m/d',
+		'thumbnail'         => 'none',
+		'size'              => 'thumbnail',
+		'no_image'          => '',
+		'excerpt'           => 'none',
 	);
 
 	public function __construct()
@@ -151,17 +152,31 @@ class ElmPostHeadliner
 			$tmp = str_replace('%post_title%', get_the_title(), $tmp);
 
 			if ($param['thumbnail'] == 'show' && $thumb_id = get_post_thumbnail_id()) {
+				// サムネイル表示指定あり、サムネイル実在する場合
 				$src = wp_get_attachment_image_src($thumb_id, $thumb_size);
 				$img = sprintf(
 					'<a href="%s" class="headliner-item-thumb"><img src="%s" alt="%s" title="%s" /></a>'
 					, get_permalink()
-					, esc_attr($src[0])
+					, esc_url($src[0])
 					, esc_attr(get_the_title())
 					, esc_attr(get_the_title())
 				);
 				$tmp = str_replace('%post_thumbnail%', $img, $tmp);
+				$tmp = str_replace('%post_thumbnail_url%', $src[0], $tmp);
+			} elseif ($param['thumbnail'] == 'show' && !empty($param['no_image']) ) {
+				// サムネイル表示指定あり、サムネイルが存在せず、no_image指定がある場合
+				$img = sprintf(
+					'<a href="%s" class="headliner-item-thumb"><img src="%s" alt="%s" title="%s" /></a>'
+					, get_permalink()
+					, esc_url($param['no_image'])
+					, esc_attr(get_the_title())
+					, esc_attr(get_the_title())
+				);
+				$tmp = str_replace('%post_thumbnail%', $img, $tmp);
+				$tmp = str_replace('%post_thumbnail_url%', esc_url($param['no_image']), $tmp);
 			} else {
 				$tmp = str_replace('%post_thumbnail%', '', $tmp);
+				$tmp = str_replace('%post_thumbnail_url%', '', $tmp);
 			}
 
 			if ($param['excerpt'] == 'show') {
