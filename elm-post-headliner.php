@@ -4,7 +4,7 @@ Plugin Name: ELM Post Headliner
 Plugin URI: https://bitbucket.org/elmadmin/elm-post-headliner
 Description: 記事のヘッドライン表示用ショートコードを提供します。Usage: [headliner] <a href="https://bitbucket.org/elmadmin/elm-post-headliner">&raquo;詳しい説明</a>
 Author: Yuki Arata
-Version: 1.4.2
+Version: 1.4.3
 Author URI: http://www.element-system.co.jp
 License: GPLv2 or later
 */
@@ -28,7 +28,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 class ElmPostHeadliner
 {
-	private $ver = '1.4.2';
+	private $ver = '1.4.3';
 
 	protected $defaults = array(
 		// Query Parameters
@@ -37,6 +37,8 @@ class ElmPostHeadliner
 		'category_name'   => '',
 		'posts_per_page'  => '5',
 		'author'          => '',
+		'order'           => 'DESC',
+		'orderby'         => 'date',
 		// Taxonomy Parameters
 		'tax'                  => null,
 		'tax_field'            => 'slug',
@@ -92,10 +94,12 @@ class ElmPostHeadliner
 		// query set
 		if ( empty( $param['query'] ) ) {
 			$args = array(
-				'post_type' => $param['post_type'],
+				'post_type'      => $param['post_type'],
 				'posts_per_page' => $param['posts_per_page'],
-				'category_name' => $param['category_name'],
-				'author' => $param['author'],
+				'category_name'  => $param['category_name'],
+				'author'         => $param['author'],
+				'order'          => $param['order'],
+				'orderby'        => $param['orderby'],
 			);
 			if ( $param['tax'] && $param['tax_terms'] ) {
 				$tax_query = array(
