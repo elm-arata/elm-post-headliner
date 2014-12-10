@@ -17,7 +17,7 @@
 
     [headliner id=hoge class=piyo]
 
-    複数のクラスをつける場合はクォーテーションで括る
+複数のクラスをつける場合はクォーテーションで括る
 
     [headliner id=hoge class="piyo foo bar"]
 
