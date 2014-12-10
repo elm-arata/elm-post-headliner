@@ -4,7 +4,7 @@ Plugin Name: ELM Post Headliner
 Plugin URI: https://bitbucket.org/elmadmin/elm-post-headliner
 Description: 記事のヘッドライン表示用ショートコードを提供します。Usage: [headliner] <a href="https://bitbucket.org/elmadmin/elm-post-headliner">&raquo;詳しい説明</a>
 Author: Yuki Arata
-Version: 1.4.3
+Version: 1.4.4
 Author URI: http://www.element-system.co.jp
 License: GPLv2 or later
 */
@@ -28,17 +28,19 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 class ElmPostHeadliner
 {
-	private $ver = '1.4.3';
+	private $ver = '1.4.4';
 
 	protected $defaults = array(
 		// Query Parameters
-		'query'           => '',
+		'query'           => '',// Special !!!
 		'post_type'       => 'post',
 		'category_name'   => '',
-		'posts_per_page'  => '5',
+		'posts_per_page'  => 5,
+		'offset'          => 0,
 		'author'          => '',
 		'order'           => 'DESC',
 		'orderby'         => 'date',
+		'ignore_sticky_posts' => false,
 		// Taxonomy Parameters
 		'tax'                  => null,
 		'tax_field'            => 'slug',
@@ -82,12 +84,20 @@ class ElmPostHeadliner
 	public function shortcode( $atts ) {
 		if ( isset( $atts[0] ) && !isset( $atts['query'] ) ) {
 			if ( (int)$atts[0] > 0 ) {
-				$atts['posts_per_page'] = (string)$atts[0];
+				$atts['posts_per_page'] = (int)$atts[0];
 			} else {
 				$atts['post_type'] = $atts[0];
 			}
 		}
 		$param = shortcode_atts( $this->defaults, $atts );
+
+		// boolean型パラメータを型変換
+		if ( isset( $param['ignore_sticky_posts'] ) && is_string( $param['ignore_sticky_posts'] ) ) {
+			$param['ignore_sticky_posts'] = ($param['ignore_sticky_posts']==='true')?true:false;
+		}
+		if ( isset( $param['tax_include_children'] ) && is_string( $param['tax_include_children'] ) ) {
+			$param['tax_include_children'] = ($param['tax_include_children']==='false')?false:true;
+		}
 
 		$args = array();
 
@@ -96,10 +106,12 @@ class ElmPostHeadliner
 			$args = array(
 				'post_type'      => $param['post_type'],
 				'posts_per_page' => $param['posts_per_page'],
+				'offset'         => $param['offset'],
 				'category_name'  => $param['category_name'],
 				'author'         => $param['author'],
 				'order'          => $param['order'],
 				'orderby'        => $param['orderby'],
+				'ignore_sticky_posts' => $param['ignore_sticky_posts'],
 			);
 			if ( $param['tax'] && $param['tax_terms'] ) {
 				$tax_query = array(
