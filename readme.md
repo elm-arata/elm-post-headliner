@@ -85,7 +85,7 @@ add_filter('elm-post-headliner-template', 'my_eph_template');
 // ショートコードを複数使う場合に
 // 特定のもののみカスタムテンプレートにするには
 // ショートコードオプション `id` を指定した上で （ [headliner id=nanika] ）
-// 以下のようにする。
+// 以下のようにする。（もちろん class指定でも同じようなことは可能。）
 function my_eph_template_for_nanika($html, $params) {
 	// id 指定が 「nanika」の場合のみカスタムテンプレートを適用
 	if ($params['id'] == 'nanika') {
@@ -122,12 +122,16 @@ add_filter('elm-post-headliner-template', 'my_eph_template_for_nanika', 10, 2);
 
 ```
 // 例
-function my_eph_replace($text, $options, $post) {
-	//独自タグの置換処理
-	return preg_replace('/%custom_replace_tag%/', '独自タグを置き換えるテキスト', $text);
+function my_eph_replace($text, $params, $post) {
+	// 独自タグ %custom_replace_tag% の置換処理
+	$text = preg_replace('/%custom_replace_tag%/', '置換後のテキスト', $text);
 
-	//既存タグの置換処理を乗っ取るのも可
-	// return preg_replace('/%post_title%/', 'あいうえお', $text);
+	// 既存タグの置換処理を乗っ取るのことも可。こちらの処理が優先される。
+	// $text = preg_replace('/%post_title%/', 'あいうえお', $text);
+
+	return $test;
 }
 add_filter('elm-post-headliner-textreplace', 'my_eph_replace', 10, 3);
 ```
+
+特定のもののみ独自置換処理を施すには、フィルターフック `elm-post-headliner-template` の例2を参照。
