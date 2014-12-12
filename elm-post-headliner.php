@@ -4,7 +4,7 @@ Plugin Name: ELM Post Headliner
 Plugin URI: https://bitbucket.org/elmadmin/elm-post-headliner
 Description: 記事のヘッドライン表示用ショートコードを提供します。Usage: [headliner] <a href="https://bitbucket.org/elmadmin/elm-post-headliner">&raquo;詳しい説明</a>
 Author: Yuki Arata
-Version: 1.4.4
+Version: 1.4.5
 Author URI: http://www.element-system.co.jp
 License: GPLv2 or later
 */
@@ -28,7 +28,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 class ElmPostHeadliner
 {
-	private $ver = '1.4.4';
+	private $ver = '1.4.5';
 
 	protected $defaults = array(
 		// Query Parameters
@@ -166,6 +166,8 @@ class ElmPostHeadliner
 			$tmp = str_replace('%post_date%', get_the_time($param['date_format']), $tmp);
 			$tmp = str_replace('%post_url%', get_permalink(), $tmp);
 			$tmp = str_replace('%post_title%', get_the_title(), $tmp);
+			$tmp = str_replace('%author%', get_the_author(), $tmp);
+			$tmp = str_replace('%author_link%', get_the_author_link(), $tmp);
 
 			if ($param['thumbnail'] == 'show' && $thumb_id = get_post_thumbnail_id()) {
 				// サムネイル表示指定あり、サムネイル実在する場合
@@ -224,6 +226,13 @@ class ElmPostHeadliner
 				$tmp = preg_replace('/%category_id%|%term_id%/', '', $tmp);
 				$tmp = preg_replace('/%category_name%|%cat_name%/', '', $tmp);
 				$tmp = preg_replace('/%category_nicename%|%category_slug%|%term_slug%/', '', $tmp);
+			}
+
+			// author_meta情報 の置換処理
+			if ( preg_match_all('/%author_meta\.([a-z0-9_]+)%/', $tmp, $author_meta_matches) ) {
+				foreach ( $author_meta_matches[1] as $key=>$meta_field ) {
+					$tmp = str_replace($author_meta_matches[0][$key], get_the_author_meta( $meta_field ), $tmp);
+				}
 			}
 
 			$buff .= $tmp;

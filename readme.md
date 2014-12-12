@@ -127,6 +127,9 @@ add_filter('elm-post-headliner-template', 'my_eph_template_for_nanika', 10, 2);
 * `%post_excerpt%` : 投稿の概要。
 * `%category_name%` : 投稿のカテゴリー名。（複数カテゴリーに属する投稿であっても、１つめのカテゴリーのみ。）
 * `%category_nicename%` : 投稿のカテゴリースラッグ。（複数カテゴリーに属する投稿であっても、１つめのカテゴリーのみ。）
+* `%author%` : 投稿者名。ユーザープロフィールにおける「ブログ上の表示名」が用いられる。**※管理画面で当該項目を明示的に設定していない場合、ログインIDが使われてしまうことに注意**。これはWordPressの仕様。
+* `%author_link%` : 投稿者のウェブサイトへのリンク。リンクテキストは投稿者名。**※管理画面で当該項目を明示的に設定していない場合、ログインIDが使われてしまうことに注意**。これはWordPressの仕様。
+* `%author_meta.hoge%` : 投稿者メタ情報。`hoge` 部分はメタ情報のフィールド名を入れる。詳細は[get_the_author_metaのドキュメント](http://codex.wordpress.org/Function_Reference/get_the_author_meta)を参照。
 
 後述するフィルター `elm-post-headliner-textreplace` を定義すれば、ここで挙げた置換タグ以外に独自の置換タグを定義することもできる。（当然ながら独自の置換タグには、置換処理自体も自分で書く必要がある）
 
