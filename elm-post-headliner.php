@@ -153,8 +153,8 @@ class ElmPostHeadliner
 			, $param['id']
 			, $param['class']);
 
-		$item_template = $this->get_template_item($param['thumbnail']);
-		$item_template = apply_filters('elm-post-headliner-template', $item_template, $param, $loop->post);
+		$item_template = $this->get_template_item();
+		$item_template = apply_filters('elm-post-headliner-template', $item_template, $param);
 
 		while ( $loop->have_posts() ) {
 			$loop->the_post();
