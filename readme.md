@@ -74,6 +74,7 @@
 * `size` *(string)* - サムネイルを出力する場合、サイズの指定。デフォルトは 'thumbnail'。
 * `no_image` *(string)* - `thumbnail=show` の時に、サムネイル画像が存在しなかった場合の代替画像URL。
 * `excerpt` *(string)* - 記事の概要テキストを出力するかどうか。デフォルトは非表示 'none'。('show' or 'none')
+* `new_label_days` *(int)* - 投稿日が指定日数以内であれば「New」ラベルを表示。デフォルトは非表示 ( 0 )。
 
 
 ## フィルターフック
@@ -153,3 +154,18 @@ add_filter('elm-post-headliner-textreplace', 'my_eph_replace', 10, 3);
 ```
 
 特定のもののみ独自置換処理を施すには、フィルターフック `elm-post-headliner-template` の例2を参照。
+
+
+### elm-post-headliner-new-label
+
+「New」ラベルのhtmlを任意のものに変更できる。ラベルのHTMLを返す。
+
+```
+// 例
+function my_eph_new_label($label_html) {
+	// $label_html に元のラベルHTMLが格納されている
+
+	return '<span class="my_custom_label_hogehoge">NEW!!</span>';
+}
+add_filter('elm-post-headliner-new-label', 'my_eph_new_label', 10, 1);
+```

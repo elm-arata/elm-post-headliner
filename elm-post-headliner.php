@@ -58,6 +58,7 @@ class ElmPostHeadliner
 		'size'              => 'thumbnail',
 		'no_image'          => '',
 		'excerpt'           => 'none',
+		'new_label_days'    => 0,
 	);
 
 	public function __construct()
@@ -90,7 +91,6 @@ class ElmPostHeadliner
 			}
 		}
 		$param = shortcode_atts( $this->defaults, $atts );
-
 		// boolean型パラメータを型変換
 		if ( isset( $param['ignore_sticky_posts'] ) && is_string( $param['ignore_sticky_posts'] ) ) {
 			$param['ignore_sticky_posts'] = ($param['ignore_sticky_posts']==='true')?true:false;
@@ -234,6 +234,17 @@ class ElmPostHeadliner
 					$tmp = str_replace($author_meta_matches[0][$key], get_the_author_meta( $meta_field ), $tmp);
 				}
 			}
+
+			// Newラベル付与
+			if ($param['new_label_days'] > 0) {
+				$now = time();
+				$label_excerpt = get_the_time('U') + ($param['new_label_days'] * 24 * 3600);
+				if ( $now < $label_excerpt ) {
+					$tmp = preg_replace('/%new_label%/', apply_filters('elm-post-headliner-new-label', '<span class="headliner-new-label label label-important">New</span>'), $tmp);
+				}
+			}
+			$tmp = preg_replace('/%new_label%/', '', $tmp);//未置換なら空文字に置換
+
 
 			$buff .= $tmp;
 		}//endwhile
