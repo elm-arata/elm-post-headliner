@@ -123,7 +123,7 @@ add_filter('elm-post-headliner-template', 'my_eph_template_for_nanika', 10, 2);
 * `%post_date%` : 投稿日時。フォーマットはオプションパラメータ `date_format` で指定できる。
 * `%post_url%` : 投稿のパーマリンク。
 * `%post_title%` : 投稿のタイトル。
-* `%post_thumbnail%` : 投稿のアイキャッチ画像。投稿へのリンク付きimgタグとして出力される（例：<a href="hoge.html"><img src="piyo.jpg"></a>）。サムネイル画像が無い場合でオプション `no_image` 指定があれば、それをURLとしたHTMLとして出力される。
+* `%post_thumbnail%` : 投稿のアイキャッチ画像。投稿へのリンク付きimgタグとして出力される（例：`<a href="post.html"><img src="thumbnail.jpg"></a>`）。サムネイル画像が無い場合でオプション `no_image` 指定があれば、それをURLとしたHTMLとして出力される。
 * `%post_thumbnail_url%` : 投稿のアイキャッチ画像URL。`%post_thumbnail%` と異なり、URLのみが出力される。サムネイル画像が無い場合でオプション `no_image` 指定があればそれが出力される。
 * `%post_excerpt%` : 投稿の概要。
 * `%category_name%` : 投稿のカテゴリー名。（複数カテゴリーに属する投稿であっても、１つめのカテゴリーのみ。）
