@@ -41,6 +41,8 @@
 * `category_name` *(string)* - 検索対象のカテゴリースラッグ。カンマ区切りで複数指定可。
 * `posts_per_page` *(int)* - 表示件数。デフォルトは5件。
 * `offset` *(int)* - 表示オフセット。指定件数ずらして投稿を取得する。デフォルトは0（オフセット無し）。
+* `author` *(int)* - 投稿者の指定。投稿者IDで指定する。デフォルトは指定無し。
+* `meta_key` *(string)* - カスタムフィールドを並び順に使いたい際、ここでキーを指定し、 `orderby` に `meta_value` または `meta_value_num` を指定する。
 * `order` *(string)* - 並び順の指定。'ASC'(昇順) or 'DESC'（降順）。デフォルトは降順。
 * `orderby` *(string)* - 何で並び替えるか。デフォルトは投稿日付。  スペース区切りで複数指定可（その場合はクォーテーションで括る）。
 	* 'date' - 投稿日付（これがデフォルト）
@@ -51,6 +53,8 @@
 	* 'ID' - 投稿ID
 	* 'menu_order' - 指定した並び順。（固定ページにある、管理画面で指定する並び順のこと。）
 	* 'rand' - ランダム！！
+	* 'meta_value' - カスタムフィールドの値を文字列として並び替える。 `meta_key` 指定が必須。
+	* 'meta_value_num' - カスタムフィールドの値を数値として並び替える。 `meta_key` 指定が必須。
 	* その他、WP_Query で使える orderby パラメータ全般。一部非対応。
 * `ignore_sticky_posts` *(boolean)* - 先頭固定を無視する。デフォルトは false （無視しない）。
 * `query` *(string)* - クエリ文字列を直接指定できる。**このオプションを使った場合、他のあらゆるクエリーオプションは無視される**。使わずに済めばその方がいい。
@@ -103,16 +107,18 @@ add_filter('elm-post-headliner-template', 'my_eph_template');
 // ショートコードオプション `id` を指定した上で （ [headliner id=nanika] ）
 // 以下のようにする。（もちろん class指定でも同じようなことは可能。）
 function my_eph_template_for_nanika($html, $params) {
+
 	// id 指定が 「nanika」の場合のみカスタムテンプレートを適用
 	if ($params['id'] == 'nanika') {
 		$html = <<< EOD
 <div class="my-eph-item-nanika">
 	%post_thumbnail%
-	<a href="%post_url%">%post_title%</a>
+	<a href="%post_url%">%post_title% %post_meta.custom_key%</a>
 	<span class="item-category item-category-%category_nicename%">%category_name%</span>
 </div>
 EOD;
 	}
+
 	return $html;
 }
 add_filter('elm-post-headliner-template', 'my_eph_template_for_nanika', 10, 2);
@@ -130,6 +136,7 @@ add_filter('elm-post-headliner-template', 'my_eph_template_for_nanika', 10, 2);
 * `%category_nicename%` : 投稿のカテゴリースラッグ。（複数カテゴリーに属する投稿であっても、１つめのカテゴリーのみ。）
 * `%author%` : 投稿者名。ユーザープロフィールにおける「ブログ上の表示名」が用いられる。**※管理画面で投稿者の表示名を明示的に設定していない場合、ログインIDが使われてしまうことに注意**。これはWordPressの仕様。
 * `%author_link%` : 投稿者のウェブサイトへのリンク。リンクテキストは投稿者名。**※管理画面で投稿者の表示名を明示的に設定していない場合、ログインIDが使われてしまうことに注意**。これはWordPressの仕様。
+* `%post_meta.hoge%` : カスタムフィールド。`hoge` 部分はカスタムフィールドのキーを指定。
 * `%author_meta.hoge%` : 投稿者メタ情報。`hoge` 部分はメタ情報のフィールド名を入れる。詳細は[get_the_author_metaのドキュメント](http://codex.wordpress.org/Function_Reference/get_the_author_meta)を参照。
 
 後述するフィルター `elm-post-headliner-textreplace` を定義すれば、ここで挙げた置換タグ以外に独自の置換タグを定義することもできる。（当然ながら独自の置換タグには、置換処理自体も自分で書く必要がある）

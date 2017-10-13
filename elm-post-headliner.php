@@ -4,7 +4,7 @@ Plugin Name: ELM Post Headliner
 Plugin URI: https://github.com/elm-arata/elm-post-headliner
 Description: 記事のヘッドライン表示用ショートコードを提供します。Usage: [headliner] <a href="https://github.com/elm-arata/elm-post-headliner">&raquo;詳しい説明</a>
 Author: Element System Co., Ltd.
-Version: 1.5.2
+Version: 1.6
 Author URI: http://www.element-system.co.jp
 License: GPLv2 or later
 */
@@ -28,7 +28,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 class ElmPostHeadliner
 {
-	private $ver = '1.5.2';
+	private $ver = '1.6';
 
 	protected $defaults = array(
 		// Query Parameters
@@ -38,6 +38,7 @@ class ElmPostHeadliner
 		'posts_per_page'  => 5,
 		'offset'          => 0,
 		'author'          => '',
+		'meta_key'        => '',
 		'order'           => 'DESC',
 		'orderby'         => 'date',
 		'ignore_sticky_posts' => false,
@@ -109,6 +110,7 @@ class ElmPostHeadliner
 				'offset'         => $param['offset'],
 				'category_name'  => $param['category_name'],
 				'author'         => $param['author'],
+				'meta_key'       => $param['meta_key'],
 				'order'          => $param['order'],
 				'orderby'        => $param['orderby'],
 				'ignore_sticky_posts' => $param['ignore_sticky_posts'],
@@ -226,6 +228,19 @@ class ElmPostHeadliner
 				$tmp = preg_replace('/%category_id%|%term_id%/', '', $tmp);
 				$tmp = preg_replace('/%category_name%|%cat_name%/', '', $tmp);
 				$tmp = preg_replace('/%category_nicename%|%category_slug%|%term_slug%/', '', $tmp);
+			}
+
+			// post_meta情報 の置換処理
+			if ( preg_match_all('/%post_meta\.([a-z0-9_]+)%/', $tmp, $post_meta_matches) ) {
+				foreach ( $post_meta_matches[1] as $key=>$meta_field ) {
+					if ( preg_match( '/date$/', $meta_field ) ) {
+						// 日付系メタフィールドの場合はdate_formatを適用
+						$t = strtotime( get_post_meta( $loop->post->ID, $meta_field, true ) );
+						$tmp = str_replace($post_meta_matches[0][$key], date( $param['date_format'], $t ), $tmp);
+					} else {
+						$tmp = str_replace($post_meta_matches[0][$key], get_post_meta( $loop->post->ID, $meta_field, true ), $tmp);
+					}
+				}
 			}
 
 			// author_meta情報 の置換処理
