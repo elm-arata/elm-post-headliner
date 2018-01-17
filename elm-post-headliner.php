@@ -28,7 +28,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 class ElmPostHeadliner
 {
-	private $ver = '1.6';
+	private $ver = '1.7';
 
 	protected $defaults = array(
 		// Query Parameters
