@@ -4,7 +4,7 @@ Plugin Name: ELM Post Headliner
 Plugin URI: https://github.com/elm-arata/elm-post-headliner
 Description: 記事のヘッドライン表示用ショートコードを提供します。Usage: [headliner] <a href="https://github.com/elm-arata/elm-post-headliner">&raquo;詳しい説明</a>
 Author: Element System Co., Ltd.
-Version: 1.6
+Version: 1.7
 Author URI: http://www.element-system.co.jp
 License: GPLv2 or later
 */
@@ -221,13 +221,32 @@ class ElmPostHeadliner
 			// replace
 			if ( !empty($categories) && is_array($categories) ) {
 				$cat = current($categories);
-				$tmp = preg_replace('/%category_id%|%cat_ID%|%term_id%/', $cat->term_id, $tmp);
-				$tmp = preg_replace('/%category_name%|%cat_name%|%term_name%/', $cat->name, $tmp);
+				$tmp = preg_replace('/%category_id%|%term_id%/', $cat->term_id, $tmp);
+				$tmp = preg_replace('/%category_name%|%term_name%/', $cat->name, $tmp);
 				$tmp = preg_replace('/%category_nicename%|%category_slug%|%term_slug%/', $cat->slug, $tmp);
+				// $tmp = preg_replace('/%category_link%/', get_term_link( $cat ), $tmp);
 			} else {
 				$tmp = preg_replace('/%category_id%|%term_id%/', '', $tmp);
-				$tmp = preg_replace('/%category_name%|%cat_name%/', '', $tmp);
+				$tmp = preg_replace('/%category_name%|%term_name%/', '', $tmp);
 				$tmp = preg_replace('/%category_nicename%|%category_slug%|%term_slug%/', '', $tmp);
+				// $tmp = preg_replace('/%category_link%/', '', $tmp);
+			}
+
+			//
+			// Tag
+			//
+			$tags = get_the_tags();
+			if ( !empty($tags) && is_array($tags) ) {
+				$tag = current($tags);
+				$tmp = preg_replace('/%tag_id%/', $tag->term_id, $tmp);
+				$tmp = preg_replace('/%tag_name%/', $tag->name, $tmp);
+				$tmp = preg_replace('/%tag_slug%/', $tag->slug, $tmp);
+				// $tmp = preg_replace('/%tag_link%/', get_term_link( $tag ), $tmp);
+			} else {
+				$tmp = preg_replace('/%tag_id%/', '', $tmp);
+				$tmp = preg_replace('/%tag_name%/', '', $tmp);
+				$tmp = preg_replace('/%tag_slug%/', '', $tmp);
+				// $tmp = preg_replace('/%tag_link%/', '#', $tmp);
 			}
 
 			// post_meta情報 の置換処理
