@@ -150,14 +150,21 @@ add_filter('elm-post-headliner-template', 'my_eph_template_for_nanika', 10, 2);
 
 ```
 // 例
+/**
+ * 独自のカスタムテンプレートタグの置換ルールを定義
+ * @param  string  $text   置換前のheadlinerテンプレートデータ
+ * @param  array   $params ショートコードのパラメータ
+ * @param  integer $post   投稿オブジェクト ( e.g. $post->ID : 投稿ID 等 )
+ * @return string          置換後のheadlinerテンプレートデータ
+ */
 function my_eph_replace($text, $params, $post) {
-	// 独自タグ %custom_replace_tag% の置換処理
+	// 独自タグ %custom_replace_tag% の置換処理を定義。
 	$text = preg_replace('/%custom_replace_tag%/', '置換後のテキスト', $text);
 
-	// 既存タグの置換処理を乗っ取るのことも可。こちらの処理が優先される。
-	// $text = preg_replace('/%post_title%/', 'あいうえお', $text);
+	// 既存タグの置換処理を乗っ取ることも可。独自定義のこちらが既存処理より優先される。例は %post_title% の置換処理を乗っ取り。
+	// $text = preg_replace('/%post_title%/', '置換後のテキスト！', $text); // 
 
-	return $test;
+	return $text;
 }
 add_filter('elm-post-headliner-textreplace', 'my_eph_replace', 10, 3);
 ```
